@@ -37,12 +37,13 @@ std::vector<std::vector<int>> generateAdjacencyMatrixGraph(int numVertices, std:
     }
 
     // Generate vertex names in an alphabetical system
+    std::string baseName = "A";
     for (int i = 0; i < numVertices; ++i) {
         std::string vertexName;
         int quotient = i / 10;
         int remainder = i % 10;
-        if (quotient > 0) {
-            vertexName += std::to_string(quotient);
+        for (int j = 0; j < quotient; ++j) {
+            vertexName += baseName;
         }
         vertexName += ('A' + remainder);
         vertexNames[i] = vertexName;
