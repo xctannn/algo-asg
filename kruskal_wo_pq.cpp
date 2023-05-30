@@ -6,6 +6,13 @@
 
 using namespace std;
 
+class DSU
+{
+    public:
+    int parent;
+    int rank;
+};
+
 class Edge
 {
 public:
@@ -24,7 +31,7 @@ public:
 
     string printEdge()
     {
-        return (to_string(source) + " " + to_string(dest)  + " " + to_string(weight));
+        return (to_string(source) + " " + to_string(dest) + " " + to_string(weight));
     }
 };
 
@@ -33,23 +40,29 @@ bool compareEdge(Edge e1, Edge e2)
     return e1.weight < e2.weight;
 }
 
-int findParent(int vertex, vector<int> &dsu)
+int findParent(int vertex, vector<DSU> &dsu)
 {
-    if (dsu[vertex] == -1)
+    if (dsu[vertex].parent == -1)
     {
         return vertex;
     }
-    return findParent(dsu[vertex], dsu);
+    return dsu[vertex].parent = findParent(dsu[vertex].parent, dsu);
 }
 
-void unionOperation(int sourceParent, int destParent, vector<int> &dsu)
+void unionOperation(int sourceParent, int destParent, vector<DSU> &dsu)
 {
-    sourceParent = findParent(sourceParent, dsu);
-    destParent = findParent(destParent, dsu);
-    dsu[sourceParent] = destParent;
+    if(dsu[sourceParent].rank > dsu[destParent].rank)
+        dsu[destParent].parent = sourceParent;
+    else if(dsu[sourceParent].rank < dsu[destParent].rank)
+        dsu[sourceParent].parent = destParent;
+    else
+    {
+        dsu[sourceParent].parent = destParent;
+        dsu[destParent].rank += 1;
+    }
 }
 
-void kruskalWithoutPq(vector<Edge> &edgeList, vector<Edge> &mst, int V, int E, vector<int> &dsu)
+void kruskalWithoutPq(vector<Edge> &edgeList, vector<Edge> &mst, int V, int E, vector<DSU> &dsu)
 {
     sort(edgeList.begin(), edgeList.end(), compareEdge);
 
@@ -152,7 +165,7 @@ void pasteVertexName(string inputFilename, string outputFilename, int V)
     int count = 0;
     while (getline(inputFile, line))
     {
-        if (count > 0 && count < V+1)
+        if (count > 0 && count < V + 1)
         {
             outputFile << line << endl;
         }
@@ -162,7 +175,8 @@ void pasteVertexName(string inputFilename, string outputFilename, int V)
     outputFile.close();
 }
 
-void mstToFile(string outputFilename, vector<Edge>& mst, int totalWeight, double totalTime){
+void mstToFile(string outputFilename, vector<Edge> &mst, int totalWeight, double totalTime)
+{
     fstream outputFile;
     outputFile.open(outputFilename, fstream::app);
     for (int i = 0; i < mst.size(); i++)
@@ -177,7 +191,7 @@ void mstToFile(string outputFilename, vector<Edge>& mst, int totalWeight, double
 int main()
 {
     vector<Edge> edgeList, mst;
-    vector<int> dsu;
+    vector<DSU> dsuList;
     vector<string> vertexNameList;
     string line;
     string inputFilename = "input.txt";
@@ -185,18 +199,6 @@ int main()
     int V;
     getVertex(inputFilename, V);
     cout << V << endl;
-
-    // V = 6;
-    // edgeList.push_back(Edge(0,1,1));
-    // edgeList.push_back(Edge(1,3,1));
-    // edgeList.push_back(Edge(2,4,1));
-    // edgeList.push_back(Edge(0,2,2));
-    // edgeList.push_back(Edge(2,3,2));
-    // edgeList.push_back(Edge(3,4,2));
-    // edgeList.push_back(Edge(1,2,3));
-    // edgeList.push_back(Edge(1,4,3));
-    // edgeList.push_back(Edge(4,5,3));
-    // edgeList.push_back(Edge(3,5,4));
 
     int nth = V + 1;
     while (getNthLine(inputFilename, nth, line))
@@ -210,10 +212,15 @@ int main()
         cout << edgeList[i].printEdge() << endl;
     }
 
-    dsu.resize(V, -1);
+    dsuList.resize(V);
+    for(int i = 0; i < V; i++)
+    {
+        dsuList[i].parent = -1;
+        dsuList[i].rank = -1;
+    }
 
     auto start = chrono::system_clock::now();
-    kruskalWithoutPq(edgeList, mst, V, edgeList.size(), dsu);
+    kruskalWithoutPq(edgeList, mst, V, edgeList.size(), dsuList);
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
 
