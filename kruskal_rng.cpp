@@ -11,7 +11,7 @@ std::vector<std::vector<int>> generateAdjacencyMatrixGraph(int numVertices, std:
 
     // Set up the random number generator with the seed
     std::mt19937 rng(1191103296);
-    std::uniform_int_distribution<int> interconnectionsDist(0, numVertices * numVertices / 1.5); // Adjust the range as needed
+    std::uniform_int_distribution<int> interconnectionsDist(0, numVertices * numVertices / 2); // Adjust the range as needed
 
     // Determine the number of vertex interconnections
     int numInterconnections = interconnectionsDist(rng);
