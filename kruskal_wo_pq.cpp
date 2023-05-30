@@ -31,6 +31,7 @@ int findParent(int, vector<DSU> &);
 void unionOperation(int, int, vector<DSU> &);
 void kruskalWithoutPq(vector<Edge> &, vector<Edge> &, int, int, vector<DSU> &);
 int calculateTotalWeight(vector<Edge> &);
+void setDefaultDsu(vector<DSU> &, int);
 
 // read inputFile and write output file
 bool getNthLine(string, int, string &);
@@ -38,7 +39,9 @@ bool isInteger(const string &);
 void readMatrixLine(string, int, int, vector<Edge> &);
 void getVertex(string, int &);
 void pasteVertexName(string, string, int);
-void mstToFile(string, vector<Edge> &, int, double);
+void mstToFile(string, vector<Edge> &, int, double, vector<string>&);
+void writeOutputFile(string, int);
+void readVertexName(string, vector<string>&, int, string&);
 
 class DSU
 {
@@ -61,11 +64,6 @@ public:
         source = s;
         dest = d;
         weight = w;
-    }
-
-    string printEdge()
-    {
-        return (to_string(source) + " " + to_string(dest) + " " + to_string(weight));
     }
 };
 
@@ -209,13 +207,15 @@ void pasteVertexName(string inputFilename, string outputFilename, int V)
     outputFile.close();
 }
 
-void mstToFile(string outputFilename, vector<Edge> &mst, int totalWeight, double totalTime)
+void mstToFile(string outputFilename, vector<Edge> &mst, int totalWeight, double totalTime, vector<string> &vertexNameList)
 {
     fstream outputFile;
     outputFile.open(outputFilename, fstream::app);
     for (int i = 0; i < mst.size(); i++)
     {
-        outputFile << mst[i].printEdge() << endl;
+        outputFile << vertexNameList[mst[i].source] << " " 
+                    << vertexNameList[mst[i].dest] << " "
+                    << mst[i].weight << endl;
     }
     outputFile << totalWeight << endl;
     outputFile << totalTime << "s" << endl;
@@ -228,6 +228,31 @@ void writeOutputFile(string outputFilename, int V)
     outputFile.open(outputFilename, ios::out);
     outputFile << V << endl;
     outputFile.close();
+}
+
+void setDefaultDsu(vector<DSU> &dsuList, int V)
+{
+    dsuList.resize(V);
+    for (int i = 0; i < V; i++)
+    {
+        dsuList[i].parent = -1;
+        dsuList[i].rank = 0;
+    }
+}
+
+void readVertexName(string inputFilename, vector<string> &vertexNameList, int vertexLineTH, string &line)
+{
+    fstream inputFile;
+    inputFile.open(inputFilename, ios::in);
+    stringstream lineStream(line);
+    string cell;
+    for (int i = 0; i < 2; i++)
+    {
+        getline(lineStream, cell, ' ');
+        if (i == 1)
+            vertexNameList.push_back(cell);
+    }
+    inputFile.close();
 }
 
 int main()
@@ -249,13 +274,19 @@ int main()
         nth += 1;
     }
 
-    dsuList.resize(V);
-    for (int i = 0; i < V; i++)
+    int vertexLineTH = 1;
+    while (vertexLineTH < V + 1)
     {
-        dsuList[i].parent = -1;
-        dsuList[i].rank = 0;
+        if (getNthLine(inputFilename, vertexLineTH, line))
+        {
+            readVertexName(inputFilename, vertexNameList, vertexLineTH, line);
+            vertexLineTH += 1;
+        }
+        else
+            break;
     }
 
+    setDefaultDsu(dsuList, V);
     auto start = chrono::system_clock::now();
     kruskalWithoutPq(edgeList, mst, V, edgeList.size(), dsuList);
     auto end = chrono::high_resolution_clock::now();
@@ -265,5 +296,5 @@ int main()
 
     writeOutputFile(outputFilename, V);
     pasteVertexName(inputFilename, outputFilename, V);
-    mstToFile(outputFilename, mst, totalW, duration.count());
+    mstToFile(outputFilename, mst, totalW, duration.count(), vertexNameList);
 }
