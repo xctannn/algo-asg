@@ -11,42 +11,22 @@ std::vector<std::vector<int>> generateAdjacencyMatrixGraph(int numVertices, std:
 
     // Set up the random number generator with the seed
     std::mt19937 rng(1191103296);
-    std::uniform_int_distribution<int> interconnectionsDist(0, numVertices * numVertices / 2); // Adjust the range as needed
+    std::uniform_int_distribution<int> weightDist(1, 10); // Adjust the range as needed
 
-    // Determine the number of vertex interconnections
-    int numInterconnections = interconnectionsDist(rng);
-
-    // Set up the random number generator for selecting vertex pairs
-    std::uniform_int_distribution<int> vertexDist(0, numVertices - 1);
-
-    // Set up the random number generator for generating weights
-    std::uniform_int_distribution<int> weightDist(1, 10); // Adjust the range of weights as needed
-
-    // Populate the graph with random weights
-    for (int i = 0; i < numInterconnections; ++i) {
-        // Randomly select two vertices to connect
-        int v1 = vertexDist(rng);
-        int v2 = vertexDist(rng);
-
-        // Generate a random weight
-        int weight = weightDist(rng);
-
-        // Connect the vertices with the weight
-        graph[v1][v2] = weight;
-        graph[v2][v1] = weight;
+    // Generate vertex names
+    const std::string nameLetter = "A";
+    for (int i = 0; i < numVertices; ++i) {
+        std::string vertexName = nameLetter + std::to_string(i);
+        vertexNames[i] = vertexName;
     }
 
-    // Generate vertex names in an alphabetical system
-    std::string baseName = "A";
+    // Populate the graph with random weights
     for (int i = 0; i < numVertices; ++i) {
-        std::string vertexName;
-        int quotient = i / 10;
-        int remainder = i % 10;
-        for (int j = 0; j < quotient; ++j) {
-            vertexName += baseName;
+        for (int j = i + 1; j < numVertices; ++j) {
+            int weight = weightDist(rng);
+            graph[i][j] = weight;
+            graph[j][i] = weight;
         }
-        vertexName += ('A' + remainder);
-        vertexNames[i] = vertexName;
     }
 
     return graph;
@@ -67,7 +47,7 @@ void saveAdjacencyMatrixGraphToFile(const std::vector<std::vector<int>>& graph, 
 
         // Save vertex names
         for (size_t i = 0; i < vertexNames.size(); ++i) {
-            outputFile << i << " " << vertexNames[i] << std::endl;
+            outputFile << vertexNames[i] << std::endl;
         }
         outputFile << std::endl;
 
