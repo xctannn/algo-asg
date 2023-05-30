@@ -1,3 +1,20 @@
+// *************************************************************************
+// Program: group207_num01_kruskalwithoutpq_am_0000006_output.cpp
+// Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
+// Class: TC2L
+// Trimester: 2220
+// Member_1: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
+// Member_2: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
+// Member_3: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
+// Member_4: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
+// *************************************************************************
+// Task Distribution
+// Member_1: Kruskal with priority queue
+// Member_2: Kruskal without priority queue
+// Member_3: Huffman Coding
+// Member_4: Random input  file generations
+// *************************************************************************
+
 #include <iostream>
 #include <fstream>
 #include <bits/stdc++.h>
@@ -6,9 +23,26 @@
 
 using namespace std;
 
+class DSU;
+class Edge;
+// Kruskal algorithm without priority queue
+bool compareEdge(Edge, Edge);
+int findParent(int, vector<DSU> &);
+void unionOperation(int, int, vector<DSU> &);
+void kruskalWithoutPq(vector<Edge> &, vector<Edge> &, int, int, vector<DSU> &);
+int calculateTotalWeight(vector<Edge> &);
+
+// read inputFile and write output file
+bool getNthLine(string, int, string &);
+bool isInteger(const string &);
+void readMatrixLine(string, int, int, vector<Edge> &);
+void getVertex(string, int &);
+void pasteVertexName(string, string, int);
+void mstToFile(string, vector<Edge> &, int, double);
+
 class DSU
 {
-    public:
+public:
     int parent;
     int rank;
 };
@@ -51,9 +85,9 @@ int findParent(int vertex, vector<DSU> &dsu)
 
 void unionOperation(int sourceParent, int destParent, vector<DSU> &dsu)
 {
-    if(dsu[sourceParent].rank > dsu[destParent].rank)
+    if (dsu[sourceParent].rank > dsu[destParent].rank)
         dsu[destParent].parent = sourceParent;
-    else if(dsu[sourceParent].rank < dsu[destParent].rank)
+    else if (dsu[sourceParent].rank < dsu[destParent].rank)
         dsu[sourceParent].parent = destParent;
     else
     {
@@ -188,17 +222,25 @@ void mstToFile(string outputFilename, vector<Edge> &mst, int totalWeight, double
     outputFile.close();
 }
 
+void writeOutputFile(string outputFilename, int V)
+{
+    fstream outputFile;
+    outputFile.open(outputFilename, ios::out);
+    outputFile << V << endl;
+    outputFile.close();
+}
+
 int main()
 {
     vector<Edge> edgeList, mst;
     vector<DSU> dsuList;
     vector<string> vertexNameList;
     string line;
-    string inputFilename = "input.txt";
+    string inputFilename = "kruskalwithoutpq_am_0000006_input.txt";
+    string outputFilename = "kruskalwithoutpq_am_0000006_output.txt";
 
     int V;
     getVertex(inputFilename, V);
-    cout << V << endl;
 
     int nth = V + 1;
     while (getNthLine(inputFilename, nth, line))
@@ -207,16 +249,11 @@ int main()
         nth += 1;
     }
 
-    for (int i = 0; i < edgeList.size(); i++)
-    {
-        cout << edgeList[i].printEdge() << endl;
-    }
-
     dsuList.resize(V);
-    for(int i = 0; i < V; i++)
+    for (int i = 0; i < V; i++)
     {
         dsuList[i].parent = -1;
-        dsuList[i].rank = -1;
+        dsuList[i].rank = 0;
     }
 
     auto start = chrono::system_clock::now();
@@ -224,18 +261,9 @@ int main()
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
 
-    for (int i = 0; i < mst.size(); i++)
-    {
-        cout << mst[i].printEdge() << endl;
-    }
     int totalW = calculateTotalWeight(mst);
-    cout << "Duration: " << duration.count() << "s\n";
 
-    fstream outputFile;
-    string outputFilename = "output.txt";
-    outputFile.open(outputFilename, ios::out);
-    outputFile << V << endl;
+    writeOutputFile(outputFilename, V);
     pasteVertexName(inputFilename, outputFilename, V);
     mstToFile(outputFilename, mst, totalW, duration.count());
-    outputFile.close();
 }
