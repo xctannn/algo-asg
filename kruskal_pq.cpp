@@ -231,7 +231,7 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 int main()
 {
     const int VERTEXCOUNT = 6;
-    string paddedNumVertices = string(7 - to_string(VERTEXCOUNT).length(), '0') + to_string(VERTEXCOUNT);
+    string paddedNumVertices = string(7 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
     string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
     vector<string> vertexNames = getVertexNames(inputFileName, VERTEXCOUNT);
