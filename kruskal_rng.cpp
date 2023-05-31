@@ -60,13 +60,11 @@ void saveAdjacencyMatrixGraphToFile(const std::vector<std::vector<int>>& graph, 
     if (outputFile.is_open()) {
         // Save the number of vertices
         outputFile << numVertices << std::endl;
-        outputFile << std::endl;
 
         // Save vertex names
         for (size_t i = 0; i < vertexNames.size(); ++i) {
             outputFile << i << " " << vertexNames[i] << std::endl;
         }
-        outputFile << std::endl;
 
         // Save adjacency matrix
         for (const auto& row : graph) {
