@@ -48,7 +48,6 @@ void generateRandomWords(int numWords, int wordLength, const std::string& filena
     }
 
     // Write generated words in one line separated by spaces
-    outputFile << std::endl;
     for (int i = 0; i < numWords; ++i) {
         outputFile << generateRandomWord(rng, wordLength) << " ";
     }
