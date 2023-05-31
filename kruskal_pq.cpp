@@ -47,7 +47,7 @@ bool connected(int*, int, int);
 int kruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare>, vector<Edge>, int*, int);
 int calculateTotalWeight(vector<Edge>);
 
-// File Operation
+// // File Operation
 void readVertexName(string, vector<string> &, int, string &);
 void pasteVertexName(string, string, int);
 bool isInteger(string);
@@ -206,7 +206,7 @@ void writeVertexNames(string outputFileName, vector<string> vertexNames)
     string line;
     int count = 0;
     for(int i = 0; i < vertexNames.size(); i++){
-        outputFile << i << vertexNames[i] << endl;
+        outputFile << i << " " << vertexNames[i] << endl;
     }
 
     outputFile.close();
@@ -230,7 +230,7 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 
 int main()
 {
-    const int VERTEXCOUNT = 6;
+    const int VERTEXCOUNT = 1000; // adjust this value to choose input file 
     string paddedNumVertices = string(7 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
     string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
@@ -241,11 +241,11 @@ int main()
     priority_queue<Edge, vector<Edge>, Compare> edgePriorityQueue;
     edgePriorityQueue = enqueueEdges(inputFileName, VERTEXCOUNT);
 
-    auto start = chrono::system_clock::now();
+    auto start= chrono::steady_clock::now();
     mst = KruskalMSTWithPq(edgePriorityQueue, parent, VERTEXCOUNT);
-    auto end = chrono::high_resolution_clock::now();
+    auto end = chrono::steady_clock::now();
     chrono::duration<double> duration = end - start;
-
+ 
     writeVertexCount(outputFileName,VERTEXCOUNT);
     writeVertexNames(outputFileName, vertexNames);
     writeMST(outputFileName, mst, vertexNames, duration.count());
