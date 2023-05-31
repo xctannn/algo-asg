@@ -30,7 +30,7 @@ bool compareEdge(Edge, Edge);
 int findParent(int, vector<DSU> &);
 void unionOperation(int, int, vector<DSU> &);
 void kruskalWithoutPq(vector<Edge> &, vector<Edge> &, int, int, vector<DSU> &);
-int calculateTotalWeight(vector<Edge> &);
+int calculateTotalWeight(vector<Edge>);
 void setDefaultDsu(vector<DSU> &, int);
 
 // read inputFile and write output file
@@ -39,7 +39,7 @@ bool isInteger(const string &);
 void readMatrixLine(string, int, int, vector<Edge> &);
 void getVertex(string, int &);
 void pasteVertexName(string, string, int);
-void mstToFile(string, vector<Edge> &, int, double, vector<string>&);
+void mstToFile(string, vector<Edge>, int, double, vector<string>);
 void writeOutputFile(string, int);
 void readVertexName(string, vector<string>&, int, string&);
 
@@ -164,7 +164,7 @@ void readMatrixLine(string line, int V, int nth, vector<Edge> &edgeList)
     }
 }
 
-int calculateTotalWeight(vector<Edge> &mst)
+int calculateTotalWeight(vector<Edge> mst)
 {
     int totalWeight = 0;
     for (int i = 0; i < mst.size(); i++)
@@ -207,7 +207,7 @@ void pasteVertexName(string inputFilename, string outputFilename, int V)
     outputFile.close();
 }
 
-void mstToFile(string outputFilename, vector<Edge> &mst, int totalWeight, double totalTime, vector<string> &vertexNameList)
+void mstToFile(string outputFilename, vector<Edge> mst, int totalWeight, double totalTime, vector<string> vertexNameList)
 {
     fstream outputFile;
     outputFile.open(outputFilename, fstream::app);
