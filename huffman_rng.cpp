@@ -5,7 +5,7 @@
 #include <set>
 
 std::string generateRandomWord(std::mt19937& rng, int wordLength) {
-    static const char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
+    static const char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static const int alphabetSize = sizeof(alphabet) - 1;
 
     std::uniform_int_distribution<int> dist(0, alphabetSize - 1);
