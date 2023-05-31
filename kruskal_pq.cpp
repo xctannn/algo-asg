@@ -242,21 +242,7 @@ int main()
     vector<Edge> MST;
     
     priority_queue<Edge, vector<Edge>, Compare> edgePriorityQueue;
-    // edgePriorityQueue.push(Edge(0, 1, 4));
-    // edgePriorityQueue.push(Edge(0, 7, 8));
-    // edgePriorityQueue.push(Edge(1, 7, 11));
-    // edgePriorityQueue.push(Edge(1, 2, 8));
-    // edgePriorityQueue.push(Edge(2, 8, 2));
-    // edgePriorityQueue.push(Edge(2, 3, 7));
-    // edgePriorityQueue.push(Edge(2, 5, 4));
-    // edgePriorityQueue.push(Edge(6, 8, 6));
-    // edgePriorityQueue.push(Edge(6, 5, 2));
-    // edgePriorityQueue.push(Edge(3, 5, 14));
-    // edgePriorityQueue.push(Edge(3, 4, 9));
-    // edgePriorityQueue.push(Edge(4, 5, 10));
-    // edgePriorityQueue.push(Edge(7, 8, 7));
-    // edgePriorityQueue.push(Edge(7, 6, 1));
-    int parent[verticesCount]; // the root ndoe of the union group of each vertices
+    int parent[verticesCount]; // contains the root node of the union group of each vertices
     
     edgePriorityQueue = enqueueEdges(inputFileName, verticesCount);
     std::cout << "\n";
