@@ -40,17 +40,20 @@ public:
 };
 
 using namespace std;
-// Kruksal with PQ
-void Union(int*, int , int);
+// Kruksal with priority queue dunction declarations
 int find(int*, int);
+void Union(int*, int , int);
 bool connected(int*, int, int);
 int kruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare>, vector<Edge>, int*, int);
 int calculateTotalWeight(vector<Edge>);
 
-// // File Operation
-void readVertexName(string, vector<string> &, int, string &);
-void pasteVertexName(string, string, int);
+// // File operation function declarations
+vector<string> getVertexNames(string, int);
+priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string, int);
+void writeVertexCount(string, int);
 bool isInteger(string);
+void writeVertexNames(string, vector<string>);
+void writeMST(string, vector<Edge>, vector<string>, double);
 
 int find(int* parent, int i){
     int root = i;
@@ -141,9 +144,8 @@ vector<string> getVertexNames(string inputFilename, int vertexCount)
     return vertexNames;
 }
 
-
-
-priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, int vertexCount){
+priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, int vertexCount)
+{
     fstream inputFile;
     inputFile.open(inputFileName, ios::in);
     string line, cell;
@@ -192,7 +194,8 @@ bool isInteger(string string)
     return true;
 }
 
-void writeVertexCount(string outputFileName, int vertexCount){
+void writeVertexCount(string outputFileName, int vertexCount)
+{
     fstream outputFile;
     outputFile.open(outputFileName, ios::out);
     outputFile << vertexCount << endl;
@@ -230,7 +233,7 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 
 int main()
 {
-    const int VERTEXCOUNT = 1000; // adjust this value to choose input file 
+    const int VERTEXCOUNT = 6; // adjust this value to choose input file 
     string paddedNumVertices = string(7 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
     string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
