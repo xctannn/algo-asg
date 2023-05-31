@@ -1,11 +1,11 @@
 // C++ Program to implement
 // Custom Comparator in Priority Queue
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <queue>
  
-// Pair of Ints = PII
-using namespace std;
- 
+
 class Edge{
 private:
     int from;
@@ -39,10 +39,20 @@ public:
         return (a.getWeight() > b.getWeight());
     }
 };
- 
-void Union(int parent[], int x, int y){
-    parent[x] = y;
-}
+
+using namespace std;
+// Kruksal with PQ
+void Union(int*, int , int);
+int find(int*, int);
+bool connected(int*, int, int);
+int kruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare>, vector<Edge>, int*, int);
+int calculateTotalWeight(vector<Edge>);
+
+// File Operation
+int getVerticesCount(string );
+void readVertexName(string, vector<string> &, int, string &);
+void pasteVertexName(string, string, int);
+bool isInteger(string);
 
 int find(int* parent, int i){
     int root = i;
@@ -59,53 +69,201 @@ int find(int* parent, int i){
     return root;
 }
 
+void Union(int* parent, int x, int y){
+    int root1 = find(parent, x);
+    int root2 = find(parent, y);
+    
+    parent[root2] = root1;
+}
+
 bool connected(int* parent, int x, int y){
     return (find(parent, x) == find(parent,y));
 }
 
-int KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> priorityQueue, int* parent, int verticesCount){
+void KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> priorityQueue, vector<Edge> MST, int* parent, int verticesCount){
+    int mstEdgeCount = 0;
+    
     for (int i = 0; i < verticesCount; i++){
         parent[i] = i;
     }
-    int sum = 0;
-    int mstEdgeCount = 0;
+
     while(!priorityQueue.empty()){
         Edge minCostEdge = priorityQueue.top();
 
         // skip edge if both nodes have the same parent
-        if(connected(parent, minCostEdge.getFrom(), minCostEdge.getTo())) continue;
+        if(connected(parent, minCostEdge.getFrom(), minCostEdge.getTo())){
+            priorityQueue.pop();
+            continue;
+        } 
 
-        std::cout << minCostEdge.getFrom() << " " << minCostEdge.getTo() << " " << minCostEdge.getWeight()
-             << "\n";
-        priorityQueue.pop();
-        sum += minCostEdge.getWeight();
+        MST.push_back(minCostEdge);
+        std::cout << minCostEdge.getFrom() << ", " << minCostEdge.getTo() << ", " << minCostEdge.getWeight() << endl;
+        Union(parent, minCostEdge.getFrom(), minCostEdge.getTo());
         mstEdgeCount++;
+        priorityQueue.pop();
 
-        if(mstEdgeCount == (verticesCount - 1))break;
+        if(mstEdgeCount == (verticesCount - 1)) break;
     }
+}
 
-    if(mstEdgeCount != verticesCount - 1) return 0;
-    return sum;
+int calculateTotalWeight(vector<Edge> mst)
+{
+    int totalWeight = 0;
+    for (int i = 0; i < mst.size(); i++)
+    {
+        totalWeight += mst[i].getWeight();
+    }
+    return totalWeight;
+}
+
+int getVerticesCount(string fileName)
+{
+    fstream inputFile;
+    string line;
+    int verticesCount;
+
+    inputFile.open(fileName, ios::in);
+    if (inputFile.is_open())
+    {
+        inputFile >> line;
+        verticesCount = stoi(line);
+    }
+    inputFile.close();
+    return verticesCount;
+}
+
+void readVertexName(string inputFilename, vector<string> &vertexNameList, int vertexLineTH, string &line)
+{
+    fstream inputFile;
+    inputFile.open(inputFilename, ios::in);
+    stringstream lineStream(line);
+    string cell;
+    for (int i = 0; i < 2; i++)
+    {
+        getline(lineStream, cell, ' ');
+        getline(lineStream, cell, ' ');
+        vertexNameList.push_back(cell);
+    }
+    inputFile.close();
+}
+
+void pasteVertexName(string inputFilename, string outputFilename, int V)
+{
+    fstream inputFile;
+    inputFile.open(inputFilename, ios::in);
+    fstream outputFile;
+    outputFile.open(outputFilename, fstream::app);
+    string line;
+    int count = 0;
+    while (getline(inputFile, line))
+    {
+        if (count > 0 && count < V + 1)
+        {
+            outputFile << line << endl;
+        }
+        count++;
+    }
+    inputFile.close();
+    outputFile.close();
+}
+
+priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, int verticesCount){
+    fstream inputFile;
+    inputFile.open(inputFileName, ios::in);
+    string line, cell;
+    stringstream lineStream(line);
+    priority_queue<Edge, vector<Edge>, Compare> edgeQueue;
+    int n = verticesCount + 2;
+    int src, dest, col = 0;
+    int lineCount = 1;
+
+    while(src < verticesCount) {
+        getline(inputFile, line);
+        if (line == "") break;
+        
+        if (lineCount >= n) {
+            stringstream lineStream(line);
+                       
+            for(dest = 0; dest < verticesCount; dest++) {
+                getline(lineStream, cell, ' ');
+                if(isInteger(cell) && src <= dest){
+                    Edge newEdge = Edge(src, dest, stoi(cell));
+                    std::cout << src << ", " << dest << ", " << cell << endl;
+                    edgeQueue.push(newEdge);
+                }
+                
+            }
+            src++;
+        }
+
+        lineCount++;
+    }
+    inputFile.close();
+
+    return edgeQueue;
+}
+
+bool isInteger(string string)
+{
+    char c;
+    for (int i = 0; i < string.length(); i++)
+    {
+        c = string[i];
+        if (!isdigit(c) && c != '-')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void writeMST(string outputFilename, vector<Edge> &mst, int totalWeight, double totalTime, vector<string> &vertexNameList)
+{
+    fstream outputFile;
+    outputFile.open(outputFilename, fstream::app);
+    for (int i = 0; i < mst.size(); i++)
+    {
+        outputFile << vertexNameList[mst[i].getFrom()] << " " 
+                    << vertexNameList[mst[i].getTo()] << " "
+                    << mst[i].getWeight() << endl;
+    }
+    outputFile << totalWeight << endl;
+    outputFile << totalTime << "s" << endl;
+    outputFile.close();
 }
 
 int main()
 {
-    priority_queue<Edge, vector<Edge>, Compare> priorityQueue;
-    priorityQueue.push(Edge(0, 1, 2));
-    priorityQueue.push(Edge(0, 2, 8));
-    priorityQueue.push(Edge(0, 4, 7));
-    priorityQueue.push(Edge(1, 2, 5));
-    priorityQueue.push(Edge(1, 3, 7));
-    priorityQueue.push(Edge(2, 3, 9));
-    priorityQueue.push(Edge(2, 4, 8));
-    priorityQueue.push(Edge(3, 5, 4));
-    priorityQueue.push(Edge(4, 5, 3));
-    int n = 6; // replace with first line found in input file
-    int parent[n]; // the root ndoe of the union group of each vertices
+    int verticesCount = 6; // replace with first line found in input file
+    string paddedNumVertices = string(7 - std::to_string(verticesCount).length(), '0') + std::to_string(verticesCount);
+    string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
+    string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
+    vector<string> vertexNameList;
+    vector<Edge> MST;
     
-    std::cout << "The MST is : \n";
-    int mstCost = KruskalMSTWithPq(priorityQueue, parent, n);
-    std::cout << "Total path cost of MST is: " << mstCost << endl;
+    priority_queue<Edge, vector<Edge>, Compare> edgePriorityQueue;
+    // edgePriorityQueue.push(Edge(0, 1, 4));
+    // edgePriorityQueue.push(Edge(0, 7, 8));
+    // edgePriorityQueue.push(Edge(1, 7, 11));
+    // edgePriorityQueue.push(Edge(1, 2, 8));
+    // edgePriorityQueue.push(Edge(2, 8, 2));
+    // edgePriorityQueue.push(Edge(2, 3, 7));
+    // edgePriorityQueue.push(Edge(2, 5, 4));
+    // edgePriorityQueue.push(Edge(6, 8, 6));
+    // edgePriorityQueue.push(Edge(6, 5, 2));
+    // edgePriorityQueue.push(Edge(3, 5, 14));
+    // edgePriorityQueue.push(Edge(3, 4, 9));
+    // edgePriorityQueue.push(Edge(4, 5, 10));
+    // edgePriorityQueue.push(Edge(7, 8, 7));
+    // edgePriorityQueue.push(Edge(7, 6, 1));
+    int parent[verticesCount]; // the root ndoe of the union group of each vertices
+    
+    edgePriorityQueue = enqueueEdges(inputFileName, verticesCount);
+    std::cout << "\n";
+    KruskalMSTWithPq(edgePriorityQueue, MST, parent, verticesCount);
+    // std::cout << "The MST is : \n";
+    // int mstCost = KruskalMSTWithPq(priorityQueue, MST, parent, verticesCount);
+    // std::cout << "Total path cost of MST is: " << mstCost << endl;
 
     return 0;
 }
