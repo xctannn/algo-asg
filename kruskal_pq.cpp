@@ -48,7 +48,6 @@ int kruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare>, vector<Edge>, 
 int calculateTotalWeight(vector<Edge>);
 
 // File Operation
-int getVertexCount(string );
 void readVertexName(string, vector<string> &, int, string &);
 void pasteVertexName(string, string, int);
 bool isInteger(string);
@@ -98,7 +97,6 @@ vector<Edge> KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> prior
         } 
 
         mst.push_back(minCostEdge);
-        std::cout << minCostEdge.getFrom() << ", " << minCostEdge.getTo() << ", " << minCostEdge.getWeight() << endl;
         Union(parent, minCostEdge.getFrom(), minCostEdge.getTo());
         mstEdgeCount++;
         priorityQueue.pop();
@@ -117,22 +115,6 @@ int calculateTotalWeight(vector<Edge> mst)
         totalWeight += mst[i].getWeight();
     }
     return totalWeight;
-}
-
-int getVertexCount(string fileName)
-{
-    fstream inputFile;
-    string line;
-    int vertexCount;
-
-    inputFile.open(fileName, ios::in);
-    if (inputFile.is_open())
-    {
-        inputFile >> line;
-        vertexCount = stoi(line);
-    }
-    inputFile.close();
-    return vertexCount;
 }
 
 vector<string> getVertexNames(string inputFilename, int vertexCount)
@@ -224,7 +206,7 @@ void writeVertexNames(string outputFileName, vector<string> vertexNames)
     string line;
     int count = 0;
     for(int i = 0; i < vertexNames.size(); i++){
-        outputFile << i << vertexNames[i] << std::endl;
+        outputFile << i << vertexNames[i] << endl;
     }
 
     outputFile.close();
@@ -248,23 +230,23 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 
 int main()
 {
-    int vertexCount = 6; // replace with first line found in input file
-    string paddedNumVertices = string(7 - std::to_string(vertexCount).length(), '0') + std::to_string(vertexCount);
+    const int VERTEXCOUNT = 6;
+    string paddedNumVertices = string(7 - to_string(VERTEXCOUNT).length(), '0') + to_string(VERTEXCOUNT);
     string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
-    vector<string> vertexNames = getVertexNames(inputFileName, vertexCount);
+    vector<string> vertexNames = getVertexNames(inputFileName, VERTEXCOUNT);
     vector<Edge> mst;
-    int parent[vertexCount]; // contains the root node of the union group of each vertices
+    int parent[VERTEXCOUNT]; // contains the root node of the union group of each vertices
     
     priority_queue<Edge, vector<Edge>, Compare> edgePriorityQueue;
-    edgePriorityQueue = enqueueEdges(inputFileName, vertexCount);
+    edgePriorityQueue = enqueueEdges(inputFileName, VERTEXCOUNT);
 
     auto start = chrono::system_clock::now();
-    mst = KruskalMSTWithPq(edgePriorityQueue, parent, vertexCount);
+    mst = KruskalMSTWithPq(edgePriorityQueue, parent, VERTEXCOUNT);
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
 
-    writeVertexCount(outputFileName,vertexCount);
+    writeVertexCount(outputFileName,VERTEXCOUNT);
     writeVertexNames(outputFileName, vertexNames);
     writeMST(outputFileName, mst, vertexNames, duration.count());
     return 0;
