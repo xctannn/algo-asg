@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
- 
+#include <chrono>
 
 class Edge{
 private:
@@ -19,7 +19,6 @@ public:
         to = destination;
         weight = w;
     }
-    // virtual ~Edge();
 
     int getFrom() const{
         return from;
@@ -49,7 +48,7 @@ int kruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare>, vector<Edge>, 
 int calculateTotalWeight(vector<Edge>);
 
 // File Operation
-int getVerticesCount(string );
+int getVertexCount(string );
 void readVertexName(string, vector<string> &, int, string &);
 void pasteVertexName(string, string, int);
 bool isInteger(string);
@@ -80,10 +79,12 @@ bool connected(int* parent, int x, int y){
     return (find(parent, x) == find(parent,y));
 }
 
-void KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> priorityQueue, vector<Edge> MST, int* parent, int verticesCount){
+vector<Edge> KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> priorityQueue, int* parent, int vertexCount){
+    vector<Edge> mst;
     int mstEdgeCount = 0;
-    
-    for (int i = 0; i < verticesCount; i++){
+
+    // initialise parent array, every vertex's initial root points to itself
+    for (int i = 0; i < vertexCount; i++){
         parent[i] = i;
     }
 
@@ -96,14 +97,16 @@ void KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> priorityQueue
             continue;
         } 
 
-        MST.push_back(minCostEdge);
+        mst.push_back(minCostEdge);
         std::cout << minCostEdge.getFrom() << ", " << minCostEdge.getTo() << ", " << minCostEdge.getWeight() << endl;
         Union(parent, minCostEdge.getFrom(), minCostEdge.getTo());
         mstEdgeCount++;
         priorityQueue.pop();
 
-        if(mstEdgeCount == (verticesCount - 1)) break;
+        if(mstEdgeCount == (vertexCount - 1)) break;
     }
+
+    return mst;
 }
 
 int calculateTotalWeight(vector<Edge> mst)
@@ -116,79 +119,69 @@ int calculateTotalWeight(vector<Edge> mst)
     return totalWeight;
 }
 
-int getVerticesCount(string fileName)
+int getVertexCount(string fileName)
 {
     fstream inputFile;
     string line;
-    int verticesCount;
+    int vertexCount;
 
     inputFile.open(fileName, ios::in);
     if (inputFile.is_open())
     {
         inputFile >> line;
-        verticesCount = stoi(line);
+        vertexCount = stoi(line);
     }
     inputFile.close();
-    return verticesCount;
+    return vertexCount;
 }
 
-void readVertexName(string inputFilename, vector<string> &vertexNameList, int vertexLineTH, string &line)
+vector<string> getVertexNames(string inputFilename, int vertexCount)
 {
     fstream inputFile;
     inputFile.open(inputFilename, ios::in);
-    stringstream lineStream(line);
-    string cell;
-    for (int i = 0; i < 2; i++)
-    {
+    vector<string> vertexNames;
+    string line, cell;
+    int lineCount = 1;
+
+    getline(inputFile, line); //skips first line
+    while(lineCount < vertexCount + 1){
+        getline(inputFile, line);
+        stringstream lineStream(line);
+
         getline(lineStream, cell, ' ');
         getline(lineStream, cell, ' ');
-        vertexNameList.push_back(cell);
+        vertexNames.push_back(cell);
+        
+        lineCount++;
     }
+
     inputFile.close();
+    return vertexNames;
 }
 
-void pasteVertexName(string inputFilename, string outputFilename, int V)
-{
-    fstream inputFile;
-    inputFile.open(inputFilename, ios::in);
-    fstream outputFile;
-    outputFile.open(outputFilename, fstream::app);
-    string line;
-    int count = 0;
-    while (getline(inputFile, line))
-    {
-        if (count > 0 && count < V + 1)
-        {
-            outputFile << line << endl;
-        }
-        count++;
-    }
-    inputFile.close();
-    outputFile.close();
-}
 
-priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, int verticesCount){
+
+priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, int vertexCount){
     fstream inputFile;
     inputFile.open(inputFileName, ios::in);
     string line, cell;
     stringstream lineStream(line);
     priority_queue<Edge, vector<Edge>, Compare> edgeQueue;
-    int n = verticesCount + 2;
+    int n = vertexCount + 2;
     int src, dest, col = 0;
     int lineCount = 1;
 
-    while(src < verticesCount) {
+    while(src < vertexCount) {
         getline(inputFile, line);
         if (line == "") break;
         
         if (lineCount >= n) {
             stringstream lineStream(line);
                        
-            for(dest = 0; dest < verticesCount; dest++) {
+            for(dest = 0; dest < vertexCount; dest++) {
                 getline(lineStream, cell, ' ');
                 if(isInteger(cell) && src <= dest){
                     Edge newEdge = Edge(src, dest, stoi(cell));
-                    std::cout << src << ", " << dest << ", " << cell << endl;
                     edgeQueue.push(newEdge);
                 }
                 
@@ -217,39 +210,62 @@ bool isInteger(string string)
     return true;
 }
 
-void writeMST(string outputFilename, vector<Edge> &mst, int totalWeight, double totalTime, vector<string> &vertexNameList)
+void writeVertexCount(string outputFileName, int vertexCount){
+    fstream outputFile;
+    outputFile.open(outputFileName, ios::out);
+    outputFile << vertexCount << endl;
+    outputFile.close();
+}
+
+void writeVertexNames(string outputFileName, vector<string> vertexNames)
 {
     fstream outputFile;
-    outputFile.open(outputFilename, fstream::app);
+    outputFile.open(outputFileName, fstream::app);
+    string line;
+    int count = 0;
+    for(int i = 0; i < vertexNames.size(); i++){
+        outputFile << i << vertexNames[i] << std::endl;
+    }
+
+    outputFile.close();
+}
+
+void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexNames, double totalTime)
+{
+    fstream outputFile;
+    outputFile.open(outputFileName, fstream::app);
+
     for (int i = 0; i < mst.size(); i++)
     {
-        outputFile << vertexNameList[mst[i].getFrom()] << " " 
-                    << vertexNameList[mst[i].getTo()] << " "
+        outputFile << vertexNames[mst[i].getFrom()] << " " 
+                    << vertexNames[mst[i].getTo()] << " "
                     << mst[i].getWeight() << endl;
     }
-    outputFile << totalWeight << endl;
+    outputFile << calculateTotalWeight(mst) << endl;
     outputFile << totalTime << "s" << endl;
     outputFile.close();
 }
 
 int main()
 {
-    int verticesCount = 6; // replace with first line found in input file
-    string paddedNumVertices = string(7 - std::to_string(verticesCount).length(), '0') + std::to_string(verticesCount);
+    int vertexCount = 6; // replace with first line found in input file
+    string paddedNumVertices = string(7 - std::to_string(vertexCount).length(), '0') + std::to_string(vertexCount);
     string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
-    vector<string> vertexNameList;
-    vector<Edge> MST;
+    vector<string> vertexNames = getVertexNames(inputFileName, vertexCount);
+    vector<Edge> mst;
+    int parent[vertexCount]; // contains the root node of the union group of each vertices
     
     priority_queue<Edge, vector<Edge>, Compare> edgePriorityQueue;
-    int parent[verticesCount]; // contains the root node of the union group of each vertices
-    
-    edgePriorityQueue = enqueueEdges(inputFileName, verticesCount);
-    std::cout << "\n";
-    KruskalMSTWithPq(edgePriorityQueue, MST, parent, verticesCount);
-    // std::cout << "The MST is : \n";
-    // int mstCost = KruskalMSTWithPq(priorityQueue, MST, parent, verticesCount);
-    // std::cout << "Total path cost of MST is: " << mstCost << endl;
+    edgePriorityQueue = enqueueEdges(inputFileName, vertexCount);
 
+    auto start = chrono::system_clock::now();
+    mst = KruskalMSTWithPq(edgePriorityQueue, parent, vertexCount);
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+
+    writeVertexCount(outputFileName,vertexCount);
+    writeVertexNames(outputFileName, vertexNames);
+    writeMST(outputFileName, mst, vertexNames, duration.count());
     return 0;
 }
