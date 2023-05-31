@@ -1,3 +1,20 @@
+// *************************************************************************
+// Program: group207_num02_kruskalwithoutpq_kruskalwithpq_am_input_files.cpp
+// Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
+// Class: TC2L
+// Trimester: 2220
+// Member_1: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
+// Member_2: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
+// Member_3: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
+// Member_4: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
+// *************************************************************************
+// Task Distribution
+// Member_1: Kruskal with priority queue
+// Member_2: Kruskal without priority queue
+// Member_3: Huffman Coding
+// Member_4: Random input file generations
+// *************************************************************************
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -22,7 +39,7 @@ std::vector<std::vector<int>> generateAdjacencyMatrixGraph(int numVertices, std:
     }
 
     // Control the number of connections between vertices
-    int maxConnections = numVertices / 2; // Adjust the value as needed
+    int maxConnections = (numVertices / 5)  + 2; // Adjust the value as needed
     std::uniform_int_distribution<int> connectionsDist(0, maxConnections);
 
     // Populate the graph with random weights and connections
@@ -51,8 +68,8 @@ std::vector<std::vector<int>> generateAdjacencyMatrixGraph(int numVertices, std:
 
 // Function to save the adjacency matrix graph to a text file
 void saveAdjacencyMatrixGraphToFile(const std::vector<std::vector<int>>& graph, const std::vector<std::string>& vertexNames, int numVertices) {
-    std::string filename = "kruskalwithoutpq_am";
-    std::string paddedNumVertices = std::string(7 - std::to_string(numVertices).length(), '0') + std::to_string(numVertices);
+    std::string filename = "kruskalwithoutpq_kruskalwithpq_am";
+    std::string paddedNumVertices = std::string(8 - std::to_string(numVertices).length(), '0') + std::to_string(numVertices);
     filename += "_" + paddedNumVertices + "_input.txt";
 
     std::ofstream outputFile(filename);
