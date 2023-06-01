@@ -233,9 +233,9 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 
 int main()
 {
-    const int VERTEXCOUNT = 6; // adjust this value to choose input file 
-    string paddedNumVertices = string(7 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
-    string inputFileName = "kruskalwithoutpq_am_" + paddedNumVertices + "_input.txt";
+    const int VERTEXCOUNT = 100; // adjust this value to choose input file 
+    string paddedNumVertices = string(8 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
+    string inputFileName = "kruskalwithoutpq_kruskalwithpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
     vector<string> vertexNames = getVertexNames(inputFileName, VERTEXCOUNT);
     vector<Edge> mst;
@@ -248,6 +248,8 @@ int main()
     mst = KruskalMSTWithPq(edgePriorityQueue, parent, VERTEXCOUNT);
     auto end = chrono::steady_clock::now();
     chrono::duration<double> duration = end - start;
+    cout << "Duration: " << duration.count() << "s" << endl;
+    cout << inputFileName << endl;
  
     writeVertexCount(outputFileName,VERTEXCOUNT);
     writeVertexNames(outputFileName, vertexNames);
