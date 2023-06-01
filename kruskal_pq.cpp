@@ -38,7 +38,12 @@ public:
         if (a.getWeight() != b.getWeight()){
             return (a.getWeight() > b.getWeight());
         }
-        else return (a.getFrom() > b.getFrom());
+        else if (a.getFrom() != b.getFrom()){
+            return (a.getFrom() > b.getFrom());
+        }
+        else{
+            return (a.getTo() > b.getTo());
+        }
     }
 };
 
