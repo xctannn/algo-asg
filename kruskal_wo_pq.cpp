@@ -12,7 +12,7 @@
 // Member_1: Kruskal with priority queue
 // Member_2: Kruskal without priority queue
 // Member_3: Huffman Coding
-// Member_4: Random input  file generations
+// Member_4: Random input file generations
 // *************************************************************************
 
 #include <iostream>
@@ -26,22 +26,21 @@ using namespace std;
 class DSU;
 class Edge;
 // Kruskal algorithm without priority queue
-bool compareEdge(Edge, Edge);
-int findParent(int, vector<DSU> &);
-void unionOperation(int, int, vector<DSU> &);
-void kruskalWithoutPq(vector<Edge>, vector<Edge> &, int, vector<DSU> &);
-int calculateTotalWeight(vector<Edge>);
-void setDefaultDsu(vector<DSU> &, int);
+int findParent(int, vector<DSU> &);     //find the absolute parent of the edge
+void unionOperation(int, int, vector<DSU> &);   //check if the adges form a cyvle in MST
+void kruskalWithoutPq(vector<Edge>, vector<Edge> &, int, vector<DSU> &);    //kruskal without priority queue algorithm
+int calculateTotalWeight(vector<Edge>);     //calculate the total weight of the MST generated
+void setDefaultDsu(vector<DSU> &, int);     //set all dsu.parent = -1 and dsu.rank = 0 by default
 
 // read inputFile and write output file
-bool getNthLine(string, int, string &);
-bool isInteger(const string &);
-void readMatrixLine(string, int, int, vector<Edge> &);
-void getVertex(string, int &);
-void pasteVertexName(string, string, int);
-void mstToFile(string, vector<Edge>, int, double, vector<string>);
-void writeOutputFile(string, int);
-void readVertexName(string, vector<string>&, int, string&);
+bool getNthLine(string, int, string &);     //get nth line in the file
+bool isInteger(const string &);             //check whether a string is an integer
+void readMatrixLine(string, int, int, vector<Edge> &);      //read edges from a line of an adjacency matrix 
+void getVertex(string, int &);              //get the total number of vertices
+void pasteVertexName(string, string, int);  //paste all vertices name from inputFile to outputFile
+void mstToFile(string, vector<Edge>, int, double, vector<string>);      //write the MST generated,total weight,time to outputFile
+void writeOutputFile(string, int);          //open an outputFile
+void readVertexName(string, vector<string>&, int, string&); //read vertices name from inputFile
 
 class DSU
 {
@@ -66,11 +65,6 @@ public:
         weight = w;
     }
 };
-
-bool compareEdge(Edge e1, Edge e2)
-{
-    return e1.weight < e2.weight;
-}
 
 int findParent(int vertex, vector<DSU> &dsu)
 {
@@ -122,7 +116,7 @@ bool getNthLine(string filename, int nth, string &line)
 {
     fstream inputFile;
     inputFile.open(filename, ios::in);
-    for (int i = 0; i < nth; ++i)
+    for (int i = 0; i < nth; ++i)   //skip nth-1 line to get nth line
     {
         getline(inputFile, line);
     }
@@ -263,11 +257,8 @@ int main()
     vector<DSU> dsuList;
     vector<string> vertexNameList;
     string line;
-    // string inputFilename = "kruskalwithoutpq_am_0000006_input.txt";
-    // string outputFilename = "kruskalwithoutpq_am_0000006_output.txt";
-
-    string inputFilename = "kruskalwithoutpq_kruskalwithpq_am_00000010_input.txt";
-    string outputFilename = "kruskalwithoutpq_am_00000010_output.txt";
+    string inputFilename = "kruskalwithoutpq_am_0000006_input.txt";
+    string outputFilename = "kruskalwithoutpq_am_0000006_output.txt";
 
     int V;
     getVertex(inputFilename, V);
