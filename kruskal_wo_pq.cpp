@@ -29,7 +29,7 @@ class Edge;
 bool compareEdge(Edge, Edge);
 int findParent(int, vector<DSU> &);
 void unionOperation(int, int, vector<DSU> &);
-void kruskalWithoutPq(vector<Edge> &, vector<Edge> &, int, int, vector<DSU> &);
+void kruskalWithoutPq(vector<Edge>, vector<Edge> &, int, vector<DSU> &);
 int calculateTotalWeight(vector<Edge>);
 void setDefaultDsu(vector<DSU> &, int);
 
@@ -94,25 +94,27 @@ void unionOperation(int sourceParent, int destParent, vector<DSU> &dsu)
     }
 }
 
-void kruskalWithoutPq(vector<Edge> &edgeList, vector<Edge> &mst, int V, int E, vector<DSU> &dsu)
+void kruskalWithoutPq(vector<Edge> edgeList, vector<Edge> &mst, int V, vector<DSU> &dsu)
 {
-    sort(edgeList.begin(), edgeList.end(), compareEdge);
-
     int i = 0;
-    int j = 0;
-    while (i < V - 1 && j < E)
+    while (i < V - 1)
     {
-        Edge currentEdge = edgeList[j];
+        int min = 0;
+	    for (int c = 0; c < edgeList.size(); c++){
+            if(edgeList[c].weight < edgeList[min].weight){
+                min = c;
+            }
+        }
+        Edge currentEdge = edgeList[min];
         int sourceParent = findParent(currentEdge.source, dsu);
         int destParent = findParent(currentEdge.dest, dsu);
-        if (sourceParent == destParent)
+        if (sourceParent != destParent)
         {
-            ++j;
-            continue;
+            unionOperation(sourceParent, destParent, dsu);
+            mst.push_back(currentEdge);
+            ++i;
         }
-        unionOperation(sourceParent, destParent, dsu);
-        mst.push_back(edgeList[j]);
-        ++i;
+        edgeList.erase(edgeList.begin() + min);
     }
 }
 
@@ -261,8 +263,11 @@ int main()
     vector<DSU> dsuList;
     vector<string> vertexNameList;
     string line;
-    string inputFilename = "kruskalwithoutpq_am_0000006_input.txt";
-    string outputFilename = "kruskalwithoutpq_am_0000006_output.txt";
+    // string inputFilename = "kruskalwithoutpq_am_0000006_input.txt";
+    // string outputFilename = "kruskalwithoutpq_am_0000006_output.txt";
+
+    string inputFilename = "kruskalwithoutpq_kruskalwithpq_am_00000010_input.txt";
+    string outputFilename = "kruskalwithoutpq_am_00000010_output.txt";
 
     int V;
     getVertex(inputFilename, V);
@@ -288,12 +293,12 @@ int main()
 
     setDefaultDsu(dsuList, V);
     auto start = chrono::system_clock::now();
-    kruskalWithoutPq(edgeList, mst, V, edgeList.size(), dsuList);
+    kruskalWithoutPq(edgeList, mst, V, dsuList);
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
+    cout << "Duration: " << duration.count() << "s" << endl;
 
     int totalW = calculateTotalWeight(mst);
-
     writeOutputFile(outputFilename, V);
     pasteVertexName(inputFilename, outputFilename, V);
     mstToFile(outputFilename, mst, totalW, duration.count(), vertexNameList);
