@@ -35,7 +35,10 @@ class Compare {
 public:
     bool operator()(Edge a, Edge b)
     {
-        return (a.getWeight() > b.getWeight());
+        if (a.getWeight() != b.getWeight()){
+            return (a.getWeight() > b.getWeight());
+        }
+        else return (a.getFrom() > b.getTo());
     }
 };
 
