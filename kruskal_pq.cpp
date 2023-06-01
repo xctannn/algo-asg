@@ -1,5 +1,19 @@
-// C++ Program to implement
-// Custom Comparator in Priority Queue
+// *************************************************************************
+// Program: group207_num04_kruskalwithpq_am_all_outputs.cpp
+// Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
+// Class: TC2L
+// Trimester: 2220
+// Member_1: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
+// Member_2: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
+// Member_3: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
+// Member_4: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
+// *************************************************************************
+// Task Distribution
+// Member_1: Kruskal with priority queue
+// Member_2: Kruskal without priority queue
+// Member_3: Huffman Coding
+// Member_4: Random input file generations
+// *************************************************************************
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -12,7 +26,6 @@ private:
     int to;
     int weight;
 public:
-    // Edge();
     Edge(int source, int destination, int w)
     {
         from = source;
@@ -52,10 +65,10 @@ using namespace std;
 int find(int*, int);
 void Union(int*, int , int);
 bool connected(int*, int, int);
-int kruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare>, vector<Edge>, int*, int);
+vector<Edge> KruskalMSTWithPq(priority_queue<Edge, vector<Edge>, Compare> , int*, int);
 int calculateTotalWeight(vector<Edge>);
 
-// // File operation function declarations
+// File operation function declarations
 vector<string> getVertexNames(string, int);
 priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string, int);
 void writeVertexCount(string, int);
@@ -241,7 +254,7 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 
 int main()
 {
-    const int VERTEXCOUNT = 100; // adjust this value to choose input file 
+    const int VERTEXCOUNT = 10000; // adjust this value to choose input file 
     string paddedNumVertices = string(8 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
     string inputFileName = "kruskalwithoutpq_kruskalwithpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
@@ -257,7 +270,6 @@ int main()
     auto end = chrono::steady_clock::now();
     chrono::duration<double> duration = end - start;
     cout << "Duration: " << duration.count() << "s" << endl;
-    cout << inputFileName << endl;
  
     writeVertexCount(outputFileName,VERTEXCOUNT);
     writeVertexNames(outputFileName, vertexNames);
