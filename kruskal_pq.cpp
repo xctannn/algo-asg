@@ -22,24 +22,24 @@
 
 class Edge{
 private:
-    int from; // source of the edge
-    int to; // destination of the edge
+    int source; // source of the edge
+    int destination; // destination of the edge
     int weight; // weight of the edge
 public:
     // Constructor
     Edge(int source, int destination, int w)
     {
-        from = source;
-        to = destination;
-        weight = w;
+        this->source = source;
+        this->destination = destination;
+        this->weight = w;
     }
 
     // Getters
-    int getFrom() const{
-        return from;
+    int getSource() const{
+        return source;
     }
-    int getTo() const{
-        return to;
+    int getDestination() const{
+        return destination;
     }
     int getWeight() const{
         return weight;
@@ -54,11 +54,11 @@ public:
         if (a.getWeight() != b.getWeight()){
             return (a.getWeight() > b.getWeight()); // sort by weight first
         }
-        else if (a.getFrom() != b.getFrom()){
-            return (a.getFrom() > b.getFrom()); // then by the source of the edge
+        else if (a.getSource() != b.getSource()){
+            return (a.getSource() > b.getSource()); // then by the source of the edge
         }
         else{
-            return (a.getTo() > b.getTo()); // and finally by the destination of the edge
+            return (a.getDestination() > b.getDestination()); // and finally by the destination of the edge
         }
     }
 };
@@ -125,13 +125,13 @@ vector<Edge> KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> prior
         Edge minCostEdge = priorityQueue.top();
 
         // skip edge if both nodes have the same parent
-        if(connected(parent, minCostEdge.getFrom(), minCostEdge.getTo())){ // true = cycle detected
+        if(connected(parent, minCostEdge.getSource(), minCostEdge.getDestination())){ // true = cycle detected
             priorityQueue.pop();
             continue;
         } 
 
         mst.push_back(minCostEdge);
-        Union(parent, minCostEdge.getFrom(), minCostEdge.getTo());
+        Union(parent, minCostEdge.getSource(), minCostEdge.getDestination());
         mstEdgeCount++;
         priorityQueue.pop();
 
@@ -256,8 +256,8 @@ void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexName
 
     for (int i = 0; i < mst.size(); i++)
     {
-        outputFile << vertexNames[mst[i].getFrom()] << " " 
-                    << vertexNames[mst[i].getTo()] << " "
+        outputFile << vertexNames[mst[i].getSource()] << " " 
+                    << vertexNames[mst[i].getDestination()] << " "
                     << mst[i].getWeight() << endl;
     }
     outputFile << calculateTotalWeight(mst) << endl;
