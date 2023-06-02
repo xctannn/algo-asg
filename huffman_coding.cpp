@@ -2,8 +2,16 @@
 #include <fstream>
 #include <vector>
 #include <bits/stdc++.h>
+#include <map>
 
 using namespace std;
+
+struct miniHeapNode
+{
+    int freq;
+    char character;
+    struct miniHeapNode *left, *right;
+};
 
 int getNumChar(string filename)
 {
@@ -36,6 +44,21 @@ void readWords(string filename, int nth, vector<char>& charList)
     inputfile.close();
 }
 
+void countChar(vector<char> charList, map<char, int>& charFreqMap)
+{
+    for(int i = 0; i < charList.size(); i++)
+    {
+        if(charFreqMap.find(charList[i]) != charFreqMap.end())
+        {
+            charFreqMap[charList[i]] += 1;
+        }
+        else
+        {
+            charFreqMap[charList[i]] = 1;
+        }
+    }
+}
+
 int main()
 {
     const int VERTEXCOUNT = 3; // adjust this value to choose input file 
@@ -44,8 +67,18 @@ int main()
     string outputFileName = "huffmancoding_" + paddedNumVertices + "_output.txt";
     int N = getNumChar(inputFileName);
     vector<char> charList;
+    map<char, int> charFreqMap;
     readWords(inputFileName, N, charList);
     for(int i = 0; i < charList.size(); i++){
         cout << charList[i];
     }
+    cout << endl;
+    countChar(charList, charFreqMap);
+    map<char, int>::iterator it = charFreqMap.begin();
+    while (it != charFreqMap.end())
+    {
+        cout << it->first << " " << it->second << endl;
+        it++;
+    }
+
 }
