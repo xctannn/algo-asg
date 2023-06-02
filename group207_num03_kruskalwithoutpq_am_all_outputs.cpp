@@ -1,5 +1,5 @@
 // *************************************************************************
-// Program: group207_num03_kruskalwithoutpq_am_all_output.cpp
+// Program: group207_num03_kruskalwithoutpq_am_all_outputs.cpp
 // Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
 // Class: TC2L
 // Trimester: 2220 
