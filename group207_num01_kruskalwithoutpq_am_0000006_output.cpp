@@ -48,6 +48,7 @@ public:
     int rank;
 };
 
+// Edge class to represent an edge in the adjacency matrix graph
 class Edge
 {
 public:
@@ -65,6 +66,7 @@ public:
     }
 };
 
+// Find the parent of a vertex
 int findParent(int vertex, vector<DSU> &dsu)
 {
     if (dsu[vertex].parent == -1)
@@ -74,6 +76,7 @@ int findParent(int vertex, vector<DSU> &dsu)
     return dsu[vertex].parent = findParent(dsu[vertex].parent, dsu);
 }
 
+// Combine two vertices into the same union group
 void unionOperation(int sourceParent, int destParent, vector<DSU> &dsu)
 {
     if (dsu[sourceParent].rank > dsu[destParent].rank)
@@ -87,6 +90,7 @@ void unionOperation(int sourceParent, int destParent, vector<DSU> &dsu)
     }
 }
 
+// Kruskal algorithm without priority queue to find Minimum Spanning Tree
 void kruskalWithoutPq(vector<Edge> edgeList, vector<Edge> &mst, int V, vector<DSU> &dsu)
 {
     int i = 0;
@@ -101,7 +105,7 @@ void kruskalWithoutPq(vector<Edge> edgeList, vector<Edge> &mst, int V, vector<DS
         Edge currentEdge = edgeList[min];
         int sourceParent = findParent(currentEdge.source, dsu);
         int destParent = findParent(currentEdge.dest, dsu);
-        if (sourceParent != destParent)
+        if (sourceParent != destParent) // checks if both vertices have the same parent
         {
             unionOperation(sourceParent, destParent, dsu);
             mst.push_back(currentEdge);
@@ -111,6 +115,7 @@ void kruskalWithoutPq(vector<Edge> edgeList, vector<Edge> &mst, int V, vector<DS
     }
 }
 
+// Get the n-th line in the input file
 bool getNthLine(string filename, int nth, string &line)
 {
     fstream inputFile;
@@ -127,6 +132,7 @@ bool getNthLine(string filename, int nth, string &line)
     return false;
 }
 
+// Check if a string is an integer
 bool isInteger(const string &string)
 {
     char c;
@@ -141,6 +147,7 @@ bool isInteger(const string &string)
     return true;
 }
 
+// Parses a line in the adjacency matrix into a vector of Edges
 void readMatrixLine(string line, int V, int nth, vector<Edge> &edgeList)
 {
     stringstream lineStream(line);
@@ -159,6 +166,7 @@ void readMatrixLine(string line, int V, int nth, vector<Edge> &edgeList)
     }
 }
 
+// Calculate total weight of the Minimum Spanning Tree
 int calculateTotalWeight(vector<Edge> mst)
 {
     int totalWeight = 0;
@@ -169,6 +177,7 @@ int calculateTotalWeight(vector<Edge> mst)
     return totalWeight;
 }
 
+// Read the number of vertices in the input file
 void getVertex(string filename, int &V)
 {
     fstream inputFile;
@@ -182,6 +191,7 @@ void getVertex(string filename, int &V)
     inputFile.close();
 }
 
+// Writes the names of the vertices into the output file
 void pasteVertexName(string inputFilename, string outputFilename, int V)
 {
     fstream inputFile;
@@ -202,12 +212,14 @@ void pasteVertexName(string inputFilename, string outputFilename, int V)
     outputFile.close();
 }
 
+// Writes the edges of the Minimum Spanning Tree into the output file 
 void mstToFile(string outputFilename, vector<Edge> mst, int totalWeight, double totalTime, vector<string> vertexNameList)
 {
     fstream outputFile;
     outputFile.open(outputFilename, fstream::app);
     for (int i = 0; i < mst.size(); i++)
     {
+        // Writes the source, destination, and weight of the edge
         outputFile << vertexNameList[mst[i].source] << " " 
                     << vertexNameList[mst[i].dest] << " "
                     << mst[i].weight << endl;
@@ -217,6 +229,7 @@ void mstToFile(string outputFilename, vector<Edge> mst, int totalWeight, double 
     outputFile.close();
 }
 
+// Writes the number of vertices into output file
 void writeOutputFile(string outputFilename, int V)
 {
     fstream outputFile;
@@ -235,6 +248,7 @@ void setDefaultDsu(vector<DSU> &dsuList, int V)
     }
 }
 
+// Parses the input file for the names of the vertices
 void readVertexName(string inputFilename, vector<string> &vertexNameList, int vertexLineTH, string &line)
 {
     fstream inputFile;
