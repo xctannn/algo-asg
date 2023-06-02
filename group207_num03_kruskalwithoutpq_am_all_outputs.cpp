@@ -26,7 +26,7 @@ class DSU;
 class Edge;
 // Kruskal algorithm without priority queue
 int findParent(int, vector<DSU> &);     //find the absolute parent of the edge
-void unionOperation(int, int, vector<DSU> &);   //check if the edges form a cycle in MST
+void unionOperation(int, int, vector<DSU> &);   //combine two vertices into the same union group
 void kruskalWithoutPq(vector<Edge>, vector<Edge> &, int, vector<DSU> &);    //kruskal without priority queue algorithm
 int calculateTotalWeight(vector<Edge>);     //calculate the total weight of the MST generated
 void setDefaultDsu(vector<DSU> &, int);     //set all dsu.parent = -1 and dsu.rank = 0 by default
@@ -191,7 +191,7 @@ void getVertex(string filename, int &V)
     inputFile.close();
 }
 
-// Writes the names of the vertices into the output file
+// Paste all vertices name from inputFile to outputFile
 void pasteVertexName(string inputFilename, string outputFilename, int V)
 {
     fstream inputFile;
