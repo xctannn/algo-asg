@@ -2,19 +2,18 @@
 // Program: group207_num01_kruskalwithoutpq_am_0000006_output.cpp
 // Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
 // Class: TC2L
-// Trimester: 2220
-// Member_1: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
-// Member_2: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
-// Member_3: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
-// Member_4: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
+// Trimester: 2220 
+// Member_1: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
+// Member_2: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
+// Member_3: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
+// Member_4: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
 // *************************************************************************
 // Task Distribution
-// Member_1: Kruskal with priority queue
-// Member_2: Kruskal without priority queue
-// Member_3: Huffman Coding
-// Member_4: Random input file generations
+// Member_1: Huffman Coding
+// Member_2: Random input file generations
+// Member_3: Kruskal with priority queue
+// Member_4: Kruskal without priority queue
 // *************************************************************************
-
 #include <iostream>
 #include <fstream>
 #include <bits/stdc++.h>
@@ -27,18 +26,18 @@ class DSU;
 class Edge;
 // Kruskal algorithm without priority queue
 int findParent(int, vector<DSU> &);     //find the absolute parent of the edge
-void unionOperation(int, int, vector<DSU> &);   //check if the adges form a cyvle in MST
+void unionOperation(int, int, vector<DSU> &);   //check if the edges form a cycle in MST
 void kruskalWithoutPq(vector<Edge>, vector<Edge> &, int, vector<DSU> &);    //kruskal without priority queue algorithm
 int calculateTotalWeight(vector<Edge>);     //calculate the total weight of the MST generated
 void setDefaultDsu(vector<DSU> &, int);     //set all dsu.parent = -1 and dsu.rank = 0 by default
 
-// read inputFile and write output file
+// read inputFile and write outputFile
 bool getNthLine(string, int, string &);     //get nth line in the file
 bool isInteger(const string &);             //check whether a string is an integer
 void readMatrixLine(string, int, int, vector<Edge> &);      //read edges from a line of an adjacency matrix 
 void getVertex(string, int &);              //get the total number of vertices
 void pasteVertexName(string, string, int);  //paste all vertices name from inputFile to outputFile
-void mstToFile(string, vector<Edge>, int, double, vector<string>);      //write the MST generated,total weight,time to outputFile
+void mstToFile(string, vector<Edge>, int, double, vector<string>);   //write the MST generated, total weight, time to outputFile
 void writeOutputFile(string, int);          //open an outputFile
 void readVertexName(string, vector<string>&, int, string&); //read vertices name from inputFile
 
@@ -120,7 +119,7 @@ bool getNthLine(string filename, int nth, string &line)
     {
         getline(inputFile, line);
     }
-    if (getline(inputFile, line))
+    if (getline(inputFile, line))   //get nth line
     {
         return true;
     }
