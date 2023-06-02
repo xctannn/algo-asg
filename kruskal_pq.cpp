@@ -22,10 +22,11 @@
 
 class Edge{
 private:
-    int from;
-    int to;
-    int weight;
+    int from; // source of the edge
+    int to; // destination of the edge
+    int weight; // weight of the edge
 public:
+    // Constructor
     Edge(int source, int destination, int w)
     {
         from = source;
@@ -33,6 +34,7 @@ public:
         weight = w;
     }
 
+    // Getters
     int getFrom() const{
         return from;
     }
@@ -44,18 +46,19 @@ public:
     }
 };
 
+// Compare class to be used for enqueueing the edges of the adjacency matrix graph
 class Compare {
 public:
     bool operator()(Edge a, Edge b)
     {
         if (a.getWeight() != b.getWeight()){
-            return (a.getWeight() > b.getWeight());
+            return (a.getWeight() > b.getWeight()); // sort by weight first
         }
         else if (a.getFrom() != b.getFrom()){
-            return (a.getFrom() > b.getFrom());
+            return (a.getFrom() > b.getFrom()); // then by the source of the edge
         }
         else{
-            return (a.getTo() > b.getTo());
+            return (a.getTo() > b.getTo()); // and finally by the destination of the edge
         }
     }
 };
@@ -76,6 +79,7 @@ bool isInteger(string);
 void writeVertexNames(string, vector<string>);
 void writeMST(string, vector<Edge>, vector<string>, double);
 
+// Search for the union group that a node belongs to
 int find(int* parent, int i){
     int root = i;
     while(root != parent[root])
@@ -83,14 +87,18 @@ int find(int* parent, int i){
 
     // Path Compression
     while (i != root) {
+        parent[i] = root; 
+        // points every node under the union group 
+        // directly to the root node, instead of needing 
+        // to traverse through all the other nodes
         int next = parent[i];
-        parent[i] = root;
         i = next;
     }
 
     return root;
 }
 
+// Combine two union groups together 
 void Union(int* parent, int x, int y){
     int root1 = find(parent, x);
     int root2 = find(parent, y);
@@ -98,15 +106,17 @@ void Union(int* parent, int x, int y){
     parent[root2] = root1;
 }
 
+// Detect whether the two nodes are from the same union group
 bool connected(int* parent, int x, int y){
     return (find(parent, x) == find(parent,y));
 }
 
+// Kruksal algorithm with priority queue to find Minimum Spanning Tree
 vector<Edge> KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> priorityQueue, int* parent, int vertexCount){
     vector<Edge> mst;
     int mstEdgeCount = 0;
 
-    // initialise parent array, every vertex's initial root points to itself
+    // initialise parent vector, every vertex's initial root points to itself
     for (int i = 0; i < vertexCount; i++){
         parent[i] = i;
     }
@@ -115,7 +125,7 @@ vector<Edge> KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> prior
         Edge minCostEdge = priorityQueue.top();
 
         // skip edge if both nodes have the same parent
-        if(connected(parent, minCostEdge.getFrom(), minCostEdge.getTo())){
+        if(connected(parent, minCostEdge.getFrom(), minCostEdge.getTo())){ // true = cycle detected
             priorityQueue.pop();
             continue;
         } 
@@ -125,12 +135,13 @@ vector<Edge> KruskalMSTWithPq(priority_queue<Edge , vector<Edge>, Compare> prior
         mstEdgeCount++;
         priorityQueue.pop();
 
-        if(mstEdgeCount == (vertexCount - 1)) break;
+        if(mstEdgeCount == (vertexCount - 1)) break; // Breaks when Minimum Spanning Tree has enough number of edges
     }
 
     return mst;
 }
 
+// Calculate total path cost of the Minimum Spanning Tree
 int calculateTotalWeight(vector<Edge> mst)
 {
     int totalWeight = 0;
@@ -141,6 +152,7 @@ int calculateTotalWeight(vector<Edge> mst)
     return totalWeight;
 }
 
+// Parse the input file to get a vector of the names of the vertex
 vector<string> getVertexNames(string inputFilename, int vertexCount)
 {
     fstream inputFile;
@@ -155,7 +167,7 @@ vector<string> getVertexNames(string inputFilename, int vertexCount)
         stringstream lineStream(line);
 
         getline(lineStream, cell, ' ');
-        getline(lineStream, cell, ' ');
+        getline(lineStream, cell, ' '); // get 2nd column's data
         vertexNames.push_back(cell);
         
         lineCount++;
@@ -165,6 +177,7 @@ vector<string> getVertexNames(string inputFilename, int vertexCount)
     return vertexNames;
 }
 
+// Parse the input file to enqueue the edges in adjacency matrix graph into a priority queue
 priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, int vertexCount)
 {
     fstream inputFile;
@@ -178,29 +191,26 @@ priority_queue<Edge, vector<Edge>, Compare> enqueueEdges(string inputFileName, i
 
     while(src < vertexCount) {
         getline(inputFile, line);
-        if (line == "") break;
-        
+        if (line == "") break; // break when next line is blank       
         if (lineCount >= n) {
             stringstream lineStream(line);
                        
             for(dest = 0; dest < vertexCount; dest++) {
                 getline(lineStream, cell, ' ');
-                if(isInteger(cell) && src <= dest){
+                if(isInteger(cell) && src <= dest){ // Check for 'i' in the adjacency matrix graph && source <= destination
                     Edge newEdge = Edge(src, dest, stoi(cell));
                     edgeQueue.push(newEdge);
                 }
-                
             }
             src++;
         }
-
         lineCount++;
     }
     inputFile.close();
-
     return edgeQueue;
 }
 
+// Check if string is an integer
 bool isInteger(string string)
 {
     char c;
@@ -215,6 +225,7 @@ bool isInteger(string string)
     return true;
 }
 
+// Write the number of vertices in the first line of output file
 void writeVertexCount(string outputFileName, int vertexCount)
 {
     fstream outputFile;
@@ -223,6 +234,7 @@ void writeVertexCount(string outputFileName, int vertexCount)
     outputFile.close();
 }
 
+// Write the names of the vertices into the output file
 void writeVertexNames(string outputFileName, vector<string> vertexNames)
 {
     fstream outputFile;
@@ -236,6 +248,7 @@ void writeVertexNames(string outputFileName, vector<string> vertexNames)
     outputFile.close();
 }
 
+// Writes the edges' source, destiantion and weight into the output file
 void writeMST(string outputFileName, vector<Edge> mst, vector<string> vertexNames, double totalTime)
 {
     fstream outputFile;
@@ -259,18 +272,18 @@ int main()
     string inputFileName = "kruskalwithoutpq_kruskalwithpq_am_" + paddedNumVertices + "_input.txt";
     string outputFileName = "kruskalwithpq_am_" + paddedNumVertices + "_output.txt";
     vector<string> vertexNames = getVertexNames(inputFileName, VERTEXCOUNT);
-    vector<Edge> mst;
     int parent[VERTEXCOUNT]; // contains the root node of the union group of each vertices
     
     priority_queue<Edge, vector<Edge>, Compare> edgePriorityQueue;
     edgePriorityQueue = enqueueEdges(inputFileName, VERTEXCOUNT);
 
     auto start= chrono::steady_clock::now();
-    mst = KruskalMSTWithPq(edgePriorityQueue, parent, VERTEXCOUNT);
+    vector<Edge> mst = KruskalMSTWithPq(edgePriorityQueue, parent, VERTEXCOUNT);
     auto end = chrono::steady_clock::now();
-    chrono::duration<double> duration = end - start;
+    chrono::duration<double> duration = end - start; // calculate execution time of Kruskal algorithm
     cout << "Duration: " << duration.count() << "s" << endl;
  
+    // Results into output file
     writeVertexCount(outputFileName,VERTEXCOUNT);
     writeVertexNames(outputFileName, vertexNames);
     writeMST(outputFileName, mst, vertexNames, duration.count());
