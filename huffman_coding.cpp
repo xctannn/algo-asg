@@ -61,8 +61,8 @@ void countChar(vector<char> charList, map<char, int>& charFreqMap)
 
 int main()
 {
-    const int VERTEXCOUNT = 3; // adjust this value to choose input file 
-    string paddedNumVertices = string(8 - std::to_string(VERTEXCOUNT).length(), '0') + std::to_string(VERTEXCOUNT);
+    const int numofWord = 3; // adjust this value to choose input file 
+    string paddedNumVertices = string(8 - std::to_string(numofWord).length(), '0') + std::to_string(numofWord);
     string inputFileName = "huffmancoding_" + paddedNumVertices + "_input.txt";
     string outputFileName = "huffmancoding_" + paddedNumVertices + "_output.txt";
     int N = getNumChar(inputFileName);
