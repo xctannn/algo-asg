@@ -1,5 +1,5 @@
 // *************************************************************************
-// Program: group207_num06_kruskalwithoutpq_huffmancoding_input_files.cpp
+// Program: group207_num05_huffmancoding_input_files.cpp
 // Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
 // Class: TC2L
 // Trimester: 2220
