@@ -1,19 +1,20 @@
 // *************************************************************************
-// Program: group207_num06_huffmancoding_input_files.cpp
+// Program: group207_num06_kruskalwithoutpq_huffmancoding_input_files.cpp
 // Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
 // Class: TC2L
-// Trimester: 2220 
-// Member_1: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
-// Member_2: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
-// Member_3: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
-// Member_4: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
+// Trimester: 2220
+// Member_1: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
+// Member_2: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
+// Member_3: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
+// Member_4: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
 // *************************************************************************
 // Task Distribution
-// Member_1: Huffman Coding
-// Member_2: Random input file generations
-// Member_3: Kruskal with priority queue
-// Member_4: Kruskal without priority queue
+// Member_1: Kruskal with priority queue
+// Member_2: Kruskal without priority queue
+// Member_3: Huffman Coding
+// Member_4: Random input file generations
 // *************************************************************************
+
 #include <iostream>
 #include <fstream>
 #include <string>
