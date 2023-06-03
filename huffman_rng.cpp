@@ -22,8 +22,7 @@ void generateRandomWords(int numWords, int wordLength, const std::string& alphab
         return;
     }
 
-    std::random_device rd;
-    std::mt19937 rng(rd());
+    std::mt19937 rng(1191103296);
 
     std::string outputString;
     std::set<char> uniqueChars;
