@@ -47,7 +47,7 @@ bool isLeaf(struct miniHeapNode* root)
 }
 
 // Traverse the Huffman Tree and store codes in a map
-void encode(miniHeapNode* root, string codes, unordered_map<char, string>& huffmanEncode)
+void encode(miniHeapNode* root, string codes, map<char, string>& huffmanEncode)
 {
 	if (root == nullptr)
 	{
@@ -55,10 +55,11 @@ void encode(miniHeapNode* root, string codes, unordered_map<char, string>& huffm
 	}
 
 	//if a leaf node is found
-	if (isLeaf(root))
+	//if (isLeaf(root))
+	if(root->left == nullptr && root->right == nullptr)
 	{
 		huffmanEncode[root->character] = codes;
-		return;
+		//return;
 	}
 
 	encode(root->left, codes + "0", huffmanEncode);
@@ -88,8 +89,6 @@ void countChar(vector<char>& charList, map<char, int>& charFreqMap)
 	//}
 }
 
-
-//unordered_map<char, int> calculateFrequecy
 
 //read the words from file
 void readWords(string filename, int nth, vector<char>& charList)
@@ -125,29 +124,14 @@ int getNumChar(string filename)
 }
 
 //open new file output and write data into file
-void writeOutputFile(string outputFilename, map<char, int> charFreqMap, unordered_map<char, string> huffmanEncode)
+void writeOutputFile(string outputFileName, map<char, int> charFreqMap, map<char, string> huffmanEncode, double totalTime)
 {
-    //fstream outputFile;
-    //outputFile.open(outputFilename, ios::out);
-    //outputFile << charList << endl;
-    //outputFile.close();
 
-    ofstream outputFile(outputFilename);
-    //if (outputFile.is_open())
-    //{
-    //    for (char ch : charList)
-    //    {
-    //        outputFile << ch;
-    //    }
-     //   outputFile << endl;
-    //    outputFile.close();
-    //}
-    //else
-    //{
-    //cout << "Unable to open the output file." << endl;
-    //}
+    ofstream outputFile(outputFileName);
 
-    //ofstream outputFile(filename);
+    double bitSize = 0;
+    double totalBit = 0;
+
     if (outputFile.is_open())
     {
         outputFile << charFreqMap.size() << endl;
@@ -159,7 +143,20 @@ void writeOutputFile(string outputFilename, map<char, int> charFreqMap, unordere
             int codeSize = code.size();
             int totalSize = freq * codeSize;
             outputFile << character << "  " << freq << "  " << code << "  " << totalSize << endl;
+            bitSize += totalSize;
+            totalBit += freq;
         }
+
+        //calculate the total text bit （*7）
+        totalBit = totalBit * 7;
+
+
+        double totalSpace = (bitSize * 100) / totalBit;
+        totalSpace = trunc(totalSpace);
+
+        outputFile << bitSize << "-bit out of " << totalBit << "-bit" << endl;
+        outputFile << "total space " << totalSpace << "%" << endl;
+        outputFile << totalTime << "s" << endl;
         outputFile.close();
     }
     else
@@ -169,11 +166,11 @@ void writeOutputFile(string outputFilename, map<char, int> charFreqMap, unordere
 }
 
 
-void HuffmanCode(string text, int N, vector<char> charList) //sLine pending
+void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pending
 {
     //charList;
     map<char, int> charFreqMap;
-	//auto start = chrono::system_clocl::now();
+	auto start = chrono::system_clock::now();
 
 	countChar(charList, charFreqMap);
 
@@ -201,52 +198,25 @@ void HuffmanCode(string text, int N, vector<char> charList) //sLine pending
 		// Create new internal node with 2 children nodes and sum of 2 nodes for the frequency
 		int sumfreq = left->freq + right->freq;
 
-		// Add the new node into priority queue
+		 //Add the new node into priority queue
 		//priorityQueue.push(getNode('\0', sumfreq, left, right));
 		priorityQueue.push(getNode(sumfreq, '\0', left, right));
-
-
-		//if(miniHeapNode* right < miniHeapNode* left)
-       // {
-        //    swap(miniHeapNode* left, miniHeapNode* right)
-        //}
-
-       // for (int i = 2; i < priorityQueue.size(); i++)
-       // {
-       //     if(priorityQueue[i])
-       // }
 	}
 
 	//stores pointer to the root of Huffman
 	miniHeapNode* root = priorityQueue.top();
 
 	//Traverse the Huffman Tree and store the codes
-	unordered_map<char, string> huffmanEncode;
+	map<char, string> huffmanEncode;
 	encode(root, "", huffmanEncode);
 
+	// Get the end time and calculate duration
+	auto end = chrono::high_resolution_clock::now();
+	chrono::duration<double> duration = end - start;
+	cout << "Duration: " << duration.count() << "s" << endl;
 
- //   map<char, int>::iterator it = charFreqMap.begin();
-//    map<char, string>::iterator codeIter = huffmanEncode.begin();
-
-    //auto it = charFreqMap.begin();
-
-    double totalBit = 0;
-    int totalSize;
-
-    string outputFileName = "huffmancoding_00000003_output.txt";
-    ofstream outputFile(outputFileName);
-    writeOutputFile(outputFileName, charFreqMap, huffmanEncode);
-
-
-       //closest to correct
-      // while (it != charFreqMap.end() && codeIter != huffmanEncode.end())
-      // {
-       //    outputFile << it->first << " " << it->second << " "  << codeIter->second << endl;
-       //    it++;
-       //    codeIter++;
-       //}
-
-
+	// Write to the output file
+    writeOutputFile(outputFileName, charFreqMap, huffmanEncode, duration.count());
 
     //free the allocated memory
     delete root;
@@ -267,16 +237,9 @@ int main()
     map<char, int> charFreqMap;
     readWords(inputFileName, N, charList);
 
-
-    //for(int i = 0; i < charList.size(); i++){
-    //    cout << charList[i];
-    //}
     cout << endl;
 
-    string line;
-	HuffmanCode(line, N, charList);
-	//writeOutputFile(outputFileName, charList);
-    //cout << N;
+	HuffmanCode(N, charList, outputFileName);
 
 	return 0;
 }
