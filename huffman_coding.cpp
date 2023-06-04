@@ -1,3 +1,19 @@
+// *************************************************************************
+// Program: group207_num05
+// Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
+// Class: TC2L
+// Trimester: 2220
+// Member_1: IVEN LOW ZI YIN | 1191202539@student.mmu.edu.my | 0124426389
+// Member_2: RYAN THEN YE TONG | 1191302688@student.mmu.edu.my | 01113296711
+// Member_3: TAN XIAO CHIN | 1191103157@student.mmu.edu.my | 0127490019
+// Member_4: YAW BOON ZHE | 1191103296@student.mmu.edu.my | 01110807448
+// *************************************************************************
+// Task Distribution
+// Member_1: Huffman Coding
+// Member_2: Random input file generations
+// Member_3: Kruskal with priority queue
+// Member_4: Kruskal without priority queue
+// *************************************************************************
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -45,7 +61,7 @@ struct compare
 	}
 };
 
-// Function to check if tree contains only a single node
+// Function to check if a node is leaf
 bool isLeaf(struct miniHeapNode* root)
 {
 	return root->left == nullptr && root->right == nullptr;
@@ -217,7 +233,7 @@ void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pe
 
 int main()
 {
-    const int numofWord = 3; // adjust this value to choose input file
+    const int numofWord = 100; // adjust this value to choose input file
     string paddedNumVertices = string(8 - std::to_string(numofWord).length(), '0') + std::to_string(numofWord);
     string inputFileName = "huffmancoding_" + paddedNumVertices + "_input.txt";
     string outputFileName = "huffmancoding_" + paddedNumVertices + "_output.txt";
