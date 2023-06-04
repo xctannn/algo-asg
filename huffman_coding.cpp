@@ -33,10 +33,14 @@ struct miniHeapNode* getNode(int freq, char character, struct miniHeapNode* left
 // Comparison to order the heap
 struct compare
 {
-	bool operator() (const miniHeapNode* a, const miniHeapNode* b) const
+	bool operator() (const miniHeapNode* a, const miniHeapNode* b)
 	{
 		//highest priority has the lowest frequency
-		return a->freq > b->freq;
+		if (a->freq != b->freq){
+            return (a->freq > b->freq);
+        }
+        else return(a->character > b->character);
+
 	}
 };
 
@@ -55,11 +59,9 @@ void encode(miniHeapNode* root, string codes, map<char, string>& huffmanEncode)
 	}
 
 	//if a leaf node is found
-	//if (isLeaf(root))
 	if(root->left == nullptr && root->right == nullptr)
 	{
 		huffmanEncode[root->character] = codes;
-		//return;
 	}
 
 	encode(root->left, codes + "0", huffmanEncode);
@@ -80,13 +82,6 @@ void countChar(vector<char>& charList, map<char, int>& charFreqMap)
             charFreqMap[charList[i]] = 1;
         }
     }
-
-    //count frequecy of character and store to map
-	//unordered_map<char, int> frequency;
-	//for (char character: charList)
-	//{
-	//	charFreqMap[character]++;
-	//}
 }
 
 
@@ -168,7 +163,6 @@ void writeOutputFile(string outputFileName, map<char, int> charFreqMap, map<char
 
 void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pending
 {
-    //charList;
     map<char, int> charFreqMap;
 	auto start = chrono::system_clock::now();
 
@@ -225,20 +219,14 @@ void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pe
 
 int main()
 {
-    const int numofWord = 3; // adjust this value to choose input file
+    const int numofWord = 100000; // adjust this value to choose input file
     string paddedNumVertices = string(8 - std::to_string(numofWord).length(), '0') + std::to_string(numofWord);
     string inputFileName = "huffmancoding_" + paddedNumVertices + "_input.txt";
     string outputFileName = "huffmancoding_" + paddedNumVertices + "_output.txt";
 
-	ifstream inputFile;
-
     int N = getNumChar(inputFileName);
     vector<char> charList;
-    map<char, int> charFreqMap;
     readWords(inputFileName, N, charList);
-
-    cout << endl;
-
 	HuffmanCode(N, charList, outputFileName);
 
 	return 0;
