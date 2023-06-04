@@ -6,6 +6,7 @@
 #include <queue>
 #include <chrono>
 #include <unordered_map>
+#include <iomanip>
 
 using namespace std;
 
@@ -124,8 +125,8 @@ void writeOutputFile(string outputFileName, map<char, int> charFreqMap, map<char
 
     ofstream outputFile(outputFileName);
 
-    double bitSize = 0;
-    double totalBit = 0;
+    float bitSize = 0;
+    float totalBit = 0;
 
     if (outputFile.is_open())
     {
@@ -146,10 +147,9 @@ void writeOutputFile(string outputFileName, map<char, int> charFreqMap, map<char
         totalBit = totalBit * 7;
 
 
-        double totalSpace = (bitSize * 100) / totalBit;
-        totalSpace = trunc(totalSpace);
+        int totalSpace = (bitSize * 100) / totalBit;
 
-        outputFile << bitSize << "-bit out of " << totalBit << "-bit" << endl;
+        outputFile << fixed << setprecision(0) << bitSize << "-bit out of " << totalBit << "-bit" << endl;
         outputFile << "total space " << totalSpace << "%" << endl;
         outputFile << totalTime << "s" << endl;
         outputFile.close();
@@ -175,12 +175,11 @@ void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pe
 	// Create leaf node and add to priority queue
 	for (auto pair: charFreqMap)
 	{
-		//priorityQueue.push(getNode(pair.first, pair.second, nullptr, nullptr));
 		priorityQueue.push(getNode(pair.second, pair.first, nullptr, nullptr));
 	}
 
-	// If more than 1 node in the queue
-	while (priorityQueue.size() > 1)
+	// If not 1 node in the queue
+	while (priorityQueue.size() != 1)
 	{
 
 		// Remove (POP) the 2 nodes of highest priority which is lowest frequency from the queue
@@ -190,11 +189,10 @@ void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pe
 		priorityQueue.pop();
 
 		// Create new internal node with 2 children nodes and sum of 2 nodes for the frequency
-		int sumfreq = left->freq + right->freq;
+		int sumFreq = left->freq + right->freq;
 
 		 //Add the new node into priority queue
-		//priorityQueue.push(getNode('\0', sumfreq, left, right));
-		priorityQueue.push(getNode(sumfreq, '\0', left, right));
+		priorityQueue.push(getNode(sumFreq, '\0', left, right));
 	}
 
 	//stores pointer to the root of Huffman
@@ -219,15 +217,16 @@ void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pe
 
 int main()
 {
-    const int numofWord = 100000; // adjust this value to choose input file
+    const int numofWord = 3; // adjust this value to choose input file
     string paddedNumVertices = string(8 - std::to_string(numofWord).length(), '0') + std::to_string(numofWord);
     string inputFileName = "huffmancoding_" + paddedNumVertices + "_input.txt";
     string outputFileName = "huffmancoding_" + paddedNumVertices + "_output.txt";
 
-    int N = getNumChar(inputFileName);
+
+    int N = getNumChar(inputFileName); // Call function to get number of character and store into N
     vector<char> charList;
     readWords(inputFileName, N, charList);
-	HuffmanCode(N, charList, outputFileName);
+	HuffmanCode(N, charList, outputFileName); // Call function to perform Huffman Coding
 
 	return 0;
 }
