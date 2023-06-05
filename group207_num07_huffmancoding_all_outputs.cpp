@@ -1,5 +1,5 @@
 // *************************************************************************
-// Program: group207_num05_huffmancoding_all_outputs.cpp
+// Program: group207_num07_huffmancoding_all_outputs.cpp
 // Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
 // Class: TC2L
 // Trimester: 2220
