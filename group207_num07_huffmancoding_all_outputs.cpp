@@ -1,5 +1,5 @@
 // *************************************************************************
-// Program: group207_num05
+// Program: group207_num05_huffmancoding_all_outputs.cpp
 // Course: TCP2101 ALGORITHM DESIGN & ANALYSIS
 // Class: TC2L
 // Trimester: 2220
@@ -233,7 +233,7 @@ void HuffmanCode(int N, vector<char> charList, string outputFileName) //sLine pe
 
 int main()
 {
-    const int numofWord = 100; // adjust this value to choose input file
+    const int numofWord = 100000; // adjust this value to choose input file
     string paddedNumVertices = string(8 - std::to_string(numofWord).length(), '0') + std::to_string(numofWord);
     string inputFileName = "huffmancoding_" + paddedNumVertices + "_input.txt";
     string outputFileName = "huffmancoding_" + paddedNumVertices + "_output.txt";
